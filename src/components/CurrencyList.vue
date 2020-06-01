@@ -1,20 +1,40 @@
 <template>
   <section>
-    <h1>Convuerter helps convert currencies including</h1>
-    <div
-      v-for="currency in currencies"
-      :key="currency.code"
-      class="currency"
-    >
-      <div class="currency-code">{{ currency.code }}</div>
-      <input
-        type="text"
-        :value="resolveAmount(currency.code)"
-        @focus="setBaseCurrency(currency.code)"
-        @input="handleChange"
+    <h1>Convert currencies including math operations</h1>
+    <div class="currency-list">
+      <div
+        v-for="currency in currencies"
+        :key="currency.code"
+        class="currency"
       >
+        <div class="currency-code">{{ currency.code }}</div>
+        <input
+          type="text"
+          :value="resolveAmount(currency.code)"
+          @focus="setBaseCurrency(currency.code)"
+          @input="handleChange"
+        >
+      </div>
     </div>
-    <div>Add new currency</div>
+
+    <hr>
+    <h3>Available currencies</h3>
+    <ul class="available-currencies">
+      <li
+        v-for="currency in availableCurrencies"
+        :key="currency"
+      >
+        <label>
+          <input
+            type="checkbox"
+            :value="currency"
+            :checked="selectedCurrencies.includes(currency)"
+            @change="toggleCurrency"
+          >
+          {{ currency }}
+        </label>
+      </li>
+    </ul>
   </section>
 </template>
 
@@ -39,6 +59,9 @@
       currencies() {
         return this.selectedCurrencies.map((currency) => ({ code: currency, rate: this.rates[currency] }))
       },
+      availableCurrencies() {
+        return Object.keys(this.rates).sort()
+      },
       currentRate() {
         return this.rates[this.base]
       },
@@ -62,6 +85,13 @@
         this.base = currencyCode
         this.rawAmount = fixed(this.amount * this.currentRate)
       },
+      toggleCurrency(e) {
+        if (e.target.checked) this.selectedCurrencies.push(e.target.value)
+        else this.removeCurrency(e.target.value)
+      },
+      removeCurrency(currencyCode) {
+        this.selectedCurrencies = this.selectedCurrencies.filter(code => code !== currencyCode)
+      },
     },
     mounted() {
       getRates().then((response) => this.rates = response.rates)
@@ -70,8 +100,9 @@
 </script>
 
 <style scoped>
-  section {
+  .currency-list {
     max-width: 500px;
+    margin: 100px auto;
   }
 
   .currency {
@@ -83,9 +114,23 @@
     width: 100px;
   }
 
-  input {
+  input[type="text"] {
     font-size: 20px;
     padding: 10px;
     flex: 1;
+  }
+
+  .available-currencies {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+  }
+
+  label {
+    display: flex;
+    align-items: baseline;
+    width: 100px;
   }
 </style>
