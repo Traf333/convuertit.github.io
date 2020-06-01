@@ -6,7 +6,7 @@
       :key="currency.code"
       class="currency"
     >
-      <div>{{ currency.code }}</div>
+      <div class="currency-code">{{ currency.code }}</div>
       <input
         type="text"
         :value="resolveAmount(currency.code)"
@@ -22,6 +22,8 @@
   import { getRates } from '../lib/api'
   import { Parser } from 'expr-eval'
 
+  const fixed = (value) => +value.toFixed(2)
+
   export default {
     name: 'CurrencyList',
     data() {
@@ -29,13 +31,13 @@
         rates: {},
         selectedCurrencies: ['RUB', 'USD', 'EUR'],
         base: 'USD',
-        amount: 0,
-        rawAmount: '0',
+        amount: 100,
+        rawAmount: '100',
       }
     },
     computed: {
       currencies() {
-        return this.selectedCurrencies.map(currency => ({ code: currency, rate: this.rates[currency] }))
+        return this.selectedCurrencies.map((currency) => ({ code: currency, rate: this.rates[currency] }))
       },
       currentRate() {
         return this.rates[this.base]
@@ -54,14 +56,11 @@
       resolveAmount(currencyCode) {
         return currencyCode === this.base
           ? this.rawAmount
-          : this.amountFormat(this.amount * this.rates[currencyCode])
-      },
-      amountFormat(value) {
-        return +value.toFixed(2)
+          : fixed(this.amount * this.rates[currencyCode])
       },
       setBaseCurrency(currencyCode) {
         this.base = currencyCode
-        this.rawAmount = this.amountFormat(this.amount * this.currentRate)
+        this.rawAmount = fixed(this.amount * this.currentRate)
       },
     },
     mounted() {
@@ -77,7 +76,13 @@
 
   .currency {
     display: flex;
+    align-items: center;
   }
+
+  .currency-code {
+    width: 100px;
+  }
+
   input {
     font-size: 20px;
     padding: 10px;
