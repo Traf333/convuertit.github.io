@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section v-if="rates">
     <h1>Convert currencies including math operations</h1>
     <div class="currency-list">
       <div
@@ -14,6 +14,7 @@
           @focus="setBaseCurrency(currency.code)"
           @input="handleChange"
         >
+        <div class="remove" @click="removeCurrency(currency.code)">❌</div>
       </div>
     </div>
 
@@ -48,7 +49,7 @@
     name: 'CurrencyList',
     data() {
       return {
-        rates: {},
+        rates: null,
         selectedCurrencies: ['RUB', 'USD', 'EUR'],
         base: 'USD',
         amount: 100,
@@ -120,6 +121,11 @@
     flex: 1;
   }
 
+  .remove {
+    padding-left: 15px;
+    cursor: pointer;
+  }
+
   .available-currencies {
     display: flex;
     list-style: none;
@@ -132,5 +138,9 @@
     display: flex;
     align-items: baseline;
     width: 100px;
+  }
+
+  .available-currencies {
+    padding: 100px;
   }
 </style>
