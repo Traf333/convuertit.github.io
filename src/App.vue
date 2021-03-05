@@ -1,18 +1,20 @@
 <template>
   <div id="app">
-    <CurrencyList msg="Welcome to Your Vue.js App"/>
+    <CurrencyList msg="Welcome to Your Vue.js App" />
   </div>
 </template>
 
-<script>
-import CurrencyList from './components/CurrencyList.vue'
+<script lang="ts">
+import { defineComponent } from "vue";
 
-export default {
-  name: 'App',
+import CurrencyList from "./components/CurrencyList.vue";
+
+export default defineComponent({
+  name: "App",
   components: {
     CurrencyList
   }
-}
+});
 </script>
 
 <style>
