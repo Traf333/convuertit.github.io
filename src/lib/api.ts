@@ -1,7 +1,7 @@
 import { RateResponse } from "../../types";
 
 const getRates = (base = "USD"): Promise<RateResponse> =>
-  fetch(`https://api.exchangeratesapi.io/latest?base=${base}`).then(res =>
+  fetch(`https://api.exchangeratesapi.io/latest?base=${base}&access_token=63130c37bb3b50ae99edfcca6f8c43bd`).then(res =>
     res.json()
   );
 
